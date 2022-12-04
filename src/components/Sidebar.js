@@ -1,4 +1,5 @@
 import React from "react";
+import ls from "local-storage";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -24,7 +25,14 @@ const Sidebar = () => {
             <Nav className="justify-content-end flex-grow-1 pe-3">
               <Nav.Link href="/">Home</Nav.Link>
               <Nav.Link href="/reports">Reports</Nav.Link>
-              <Nav.Link href="/logout">Logout</Nav.Link>
+              <Nav.Link
+                onClick={() => {
+                  ls("loggedInUser", "");
+                  window.location.replace("/");
+                }}
+              >
+                Logout
+              </Nav.Link>
             </Nav>
           </Offcanvas.Body>
         </Navbar.Offcanvas>

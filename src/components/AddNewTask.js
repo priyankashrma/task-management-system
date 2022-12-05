@@ -41,7 +41,6 @@ const AddNewTask = ({ tasks, setTasks }) => {
         <Form.Control
           type="date"
           name="date"
-          value={formState.dueDate}
           onChange={(e) =>
             setFormState({ ...formState, dueDate: e.target.value })
           }

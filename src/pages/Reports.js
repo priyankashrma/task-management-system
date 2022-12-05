@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Table,
   InputGroup,
@@ -12,8 +12,16 @@ import { TaskContext } from "../context/TaskContext";
 const Reports = () => {
   const { tasks } = useContext(TaskContext);
   const [filteredTasks, setFilteredTasks] = useState(tasks);
-  const [statusFilter, setStatusFilter] = useState(true);
+  const [statusFilter, setStatusFilter] = useState(false);
+  const [taskTypeFilter, setTaskTypeFilter] = useState("");
 
+  useEffect(() => {
+    setFilteredTasks(
+      [...filteredTasks].sort(
+        (a, b) => new Date(b.dueDate) - new Date(a.dueDate)
+      )
+    );
+  }, []);
   return (
     <div className="row">
       <h4 className="my-3 text-center">Business Reports</h4>
@@ -31,7 +39,7 @@ const Reports = () => {
                 <InputGroup.Text>Title</InputGroup.Text>
                 <Form.Control
                   aria-describedby="title"
-                  onChange={(e) => {
+                  onKeyUp={(e) => {
                     if (e.target.value) {
                       setFilteredTasks(() => {
                         if (filteredTasks.length) {
@@ -115,14 +123,21 @@ const Reports = () => {
                 >
                   <i className="bi bi-caret-up-fill"></i>
                 </Button>
-                <Button variant="outline-secondary">
+                <Button
+                  variant="outline-secondary"
+                  onClick={() =>
+                    tasks.sort(function (a, b) {
+                      return new Date(a.dueDate) - new Date(b.dueDate);
+                    })
+                  }
+                >
                   <i className="bi bi-caret-down-fill"></i>
                 </Button>
               </InputGroup>
             </th>
             <th>
               <InputGroup className="mb-3">
-                <InputGroup.Text>Status</InputGroup.Text>
+                <InputGroup.Text>Status Filter</InputGroup.Text>
                 <OverlayTrigger
                   placement="right"
                   delay={{ show: 250, hide: 400 }}
@@ -137,81 +152,115 @@ const Reports = () => {
                     aria-describedby="status"
                     checked={statusFilter}
                     onChange={(e) => {
-                      setStatusFilter(!statusFilter);
-                      if (statusFilter) {
-                        setFilteredTasks(
-                          [...filteredTasks].filter((a) => a.status === false)
-                        );
-                      } else {
+                      setStatusFilter((statusFilter) => !statusFilter);
+                      console.log(statusFilter);
+                      if (statusFilter === true) {
                         setFilteredTasks(tasks);
                       }
                     }}
                   />
                 </OverlayTrigger>
-                <OverlayTrigger
-                  placement="right"
-                  delay={{ show: 250, hide: 400 }}
-                  overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
-                      Completed First
-                    </Tooltip>
-                  )}
-                >
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() =>
-                      setFilteredTasks(
-                        [...filteredTasks].sort((a, b) => {
-                          if (b.status > a.status) {
-                            return 1;
-                          } else if (a.status > b.status) {
-                            return -1;
-                          } else {
-                            return 0;
-                          }
-                        })
-                      )
-                    }
-                  >
-                    <i className="bi bi-caret-up-fill"></i>
-                  </Button>
-                </OverlayTrigger>
-                <OverlayTrigger
-                  placement="right"
-                  delay={{ show: 250, hide: 400 }}
-                  overlay={(props) => (
-                    <Tooltip id="button-tooltip" {...props}>
-                      Incomplete First
-                    </Tooltip>
-                  )}
-                >
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() =>
-                      setFilteredTasks(
-                        [...filteredTasks].sort((a, b) => {
-                          if (a.status > b.status) {
-                            return 1;
-                          } else if (b.status > a.status) {
-                            return -1;
-                          } else {
-                            return 0;
-                          }
-                        })
-                      )
-                    }
-                  >
-                    <i className="bi bi-caret-down-fill"></i>
-                  </Button>
-                </OverlayTrigger>
+                {statusFilter ? (
+                  <div>
+                    {" "}
+                    <Form.Group controlId="typeOfTask">
+                      <Form.Check
+                        value="completed"
+                        type="radio"
+                        aria-label="radio 1"
+                        label="Completed"
+                        onChange={() => {
+                          setTaskTypeFilter("completed");
+                          setFilteredTasks(
+                            [...tasks].filter((a) => a.status === true)
+                          );
+                        }}
+                        checked={taskTypeFilter === "completed"}
+                      />
+                      <Form.Check
+                        value="pending"
+                        type="radio"
+                        aria-label="radio 2"
+                        label="Pending"
+                        onChange={() => {
+                          setTaskTypeFilter("pending");
+                          setFilteredTasks(
+                            [...tasks].filter((a) => a.status === false)
+                          );
+                        }}
+                        checked={taskTypeFilter === "pending"}
+                      />
+                    </Form.Group>
+                  </div>
+                ) : (
+                  <div>
+                    <OverlayTrigger
+                      placement="right"
+                      delay={{ show: 250, hide: 400 }}
+                      overlay={(props) => (
+                        <Tooltip id="button-tooltip" {...props}>
+                          Completed First
+                        </Tooltip>
+                      )}
+                    >
+                      <Button
+                        variant="outline-secondary"
+                        onClick={() =>
+                          setFilteredTasks(
+                            [...filteredTasks].sort((a, b) => {
+                              if (b.status > a.status) {
+                                return 1;
+                              } else if (a.status > b.status) {
+                                return -1;
+                              } else {
+                                return 0;
+                              }
+                            })
+                          )
+                        }
+                      >
+                        <i className="bi bi-caret-up-fill"></i>
+                      </Button>
+                    </OverlayTrigger>
+                    &nbsp;
+                    <OverlayTrigger
+                      placement="right"
+                      delay={{ show: 250, hide: 400 }}
+                      overlay={(props) => (
+                        <Tooltip id="button-tooltip" {...props}>
+                          Incomplete First
+                        </Tooltip>
+                      )}
+                    >
+                      <Button
+                        variant="outline-secondary"
+                        onClick={() =>
+                          setFilteredTasks(
+                            [...filteredTasks].sort((a, b) => {
+                              if (a.status > b.status) {
+                                return 1;
+                              } else if (b.status > a.status) {
+                                return -1;
+                              } else {
+                                return 0;
+                              }
+                            })
+                          )
+                        }
+                      >
+                        <i className="bi bi-caret-down-fill"></i>
+                      </Button>
+                    </OverlayTrigger>
+                  </div>
+                )}
               </InputGroup>
             </th>
           </tr>
         </thead>
         <tbody>
-          {filteredTasks.map((task) => (
+          {filteredTasks.map((task, index) => (
             <tr key={task.title + task.id}>
-              <td>{task.id}</td>
+              <td>{index + 1}</td>
               <td>{task.title}</td>
               <td>{task.dueDate}</td>
               <td>{task.status ? "Completed" : "Not Completed"}</td>

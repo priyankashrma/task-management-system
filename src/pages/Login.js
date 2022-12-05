@@ -21,6 +21,7 @@ const Login = () => {
   const users = JSON.parse(ls.get("usersTaskHuman")) || [];
 
   const login = (e) => {
+    e.preventDefault();
     if (users.length) {
       const filteredUsers = users.filter(
         (user) => user.email === formState.email

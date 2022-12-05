@@ -8,9 +8,11 @@ import Reports from "./pages/Reports";
 import Sidebar from "./components/Sidebar";
 import Login from "./pages/Login";
 import TaskContextProvider from "./context/TaskContext";
+import { useState } from "react";
 
 function App() {
-  const loggedInUser = ls.get("loggedInUser");
+  const [loggedInUser, setLoggedInUser] = useState(ls.get("loggedInUser"));
+
   return (
     <div className="row">
       <Sidebar />
@@ -23,11 +25,23 @@ function App() {
                 <Route
                   exact
                   path="/"
-                  element={loggedInUser ? <Home /> : <Login />}
+                  element={
+                    loggedInUser ? (
+                      <Home />
+                    ) : (
+                      <Login setLoggedInUser={setLoggedInUser} />
+                    )
+                  }
                 />
                 <Route
                   path="/tasks"
-                  element={loggedInUser ? <Home /> : <Login />}
+                  element={
+                    loggedInUser ? (
+                      <Home />
+                    ) : (
+                      <Login setLoggedInUser={setLoggedInUser} />
+                    )
+                  }
                 />
                 <Route
                   path="/reports"

@@ -6,6 +6,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Offcanvas from "react-bootstrap/Offcanvas";
 
 const Sidebar = () => {
+  const loggedInUser = ls.get("loggedInUser");
   return (
     <Navbar bg="light" expand={false} className="mb-3">
       <Container fluid className="m-2">
@@ -25,14 +26,16 @@ const Sidebar = () => {
             <Nav className="justify-content-end flex-grow-1 pe-3">
               <Nav.Link href="/">Home</Nav.Link>
               <Nav.Link href="/reports">Reports</Nav.Link>
-              <Nav.Link
-                onClick={() => {
-                  ls("loggedInUser", "");
-                  window.location.replace("/");
-                }}
-              >
-                Logout
-              </Nav.Link>
+              {loggedInUser && (
+                <Nav.Link
+                  onClick={() => {
+                    ls("loggedInUser", "");
+                    window.location.replace("/");
+                  }}
+                >
+                  Logout
+                </Nav.Link>
+              )}
             </Nav>
           </Offcanvas.Body>
         </Navbar.Offcanvas>

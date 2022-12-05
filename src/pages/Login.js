@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Form, Container, Alert } from "react-bootstrap";
 import { TaskContext } from "../context/TaskContext";
 
-const Login = () => {
+const Login = ({ setLoggedInUser }) => {
   const navigate = useNavigate();
   const { setTasks } = useContext(TaskContext);
 
@@ -34,13 +34,15 @@ const Login = () => {
           setDisabledLogin(true);
 
           setMessage("Logged In Successfully");
+          setLoggedInUser(formState.email);
           ls("loggedInUser", formState.email);
           setTasks(filteredUser.tasks);
           setTimeout(() => {
             navigate("/tasks");
           }, 500);
         } else {
-          setFormState({ ...formState, password: "" });
+          setFormState({ email: formState.email, password: "" });
+
           setError("Password does not match");
         }
       } else {
@@ -62,6 +64,7 @@ const Login = () => {
     ls("usersTaskHuman", JSON.stringify(users));
     setDisabledLogin(true);
     setMessage("User Created Successfully");
+    setLoggedInUser(formState.email);
     ls("loggedInUser", formState.email);
     setTimeout(() => {
       navigate("/tasks");
@@ -79,6 +82,7 @@ const Login = () => {
               aria-label="email"
               type="email"
               placeholder="Enter email"
+              value={formState.email}
               onChange={(e) =>
                 setFormState({ ...formState, email: e.target.value })
               }
@@ -91,6 +95,7 @@ const Login = () => {
               aria-label="password"
               type="password"
               placeholder="Password"
+              value={formState.password}
               onChange={(e) =>
                 setFormState({ ...formState, password: e.target.value })
               }

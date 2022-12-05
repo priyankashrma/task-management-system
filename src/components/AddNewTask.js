@@ -27,6 +27,8 @@ const AddNewTask = ({ tasks, setTasks }) => {
         <Form.Label className="mb-1">Title</Form.Label>
         <Form.Control
           required
+          minLength={50}
+          maxLength={100}
           aria-label="Title"
           name="name"
           value={formState.title}

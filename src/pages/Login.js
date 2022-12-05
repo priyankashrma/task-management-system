@@ -39,8 +39,8 @@ const Login = () => {
             navigate("/tasks");
           }, 500);
         } else {
-          setError("Password does not match");
           setFormState({ ...formState, password: "" });
+          setError("Password does not match");
         }
       } else {
         createUser();
@@ -74,6 +74,7 @@ const Login = () => {
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control
+              required
               aria-label="email"
               type="email"
               placeholder="Enter email"
@@ -85,6 +86,7 @@ const Login = () => {
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
             <Form.Control
+              required
               aria-label="password"
               type="password"
               placeholder="Password"
